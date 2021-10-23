@@ -52,7 +52,7 @@ for letter in range(1, 27):
                 driver.back()
                 print("no pictures")
                 continue
-            if num_pict <5:
+            if num_pict <8:
                 driver.back()
                 continue
         except Exception:
@@ -70,6 +70,7 @@ for letter in range(1, 27):
         if os.path.isdir(f'.\\dataset\\{gender}\\{act_name}'):
             driver.back()
             driver.back()
+            print('уже просмотрено')
             continue
         else:
             os.mkdir(f'.\\dataset\\{gender}\\{act_name}')
