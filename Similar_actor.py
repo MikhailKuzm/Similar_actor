@@ -10,7 +10,7 @@ import time
 driver = webdriver.Firefox()
 driver.get("https://www.kino-teatr.ru/kino/acter/all/ros/a/")
 
-for letter in range(11, 27):
+for letter in range(1, 27):
     #переходим на  следующую страницу, за исключением первой итерации
     if letter != 1:  
         xpath = f'//*[@id="all_body_block"]/div[4]/div/div[3]/div[1]/div[3]/div[1]/a[{letter}]'
@@ -20,7 +20,7 @@ for letter in range(11, 27):
     time.sleep(3)
     #находим количество актёров на одной странице
     act_per_page = driver.find_elements_by_class_name('list_item_name')
-    for i in range(3, len(act_per_page)+1)[::5]:
+    for i in range(3, len(act_per_page)+1)[::3]:
         #переходим на страницу актёра
         actor_page = driver.find_element_by_xpath(f'//*[@id="all_body_block"]/div[4]/div/div[3]/div[1]/div[3]/div[{i}]/div[2]/div[1]/h4/a/strong')
         actor_page.click()
@@ -49,7 +49,11 @@ for letter in range(11, 27):
                 num_pict = int(num_pict.split(' ')[0])
                 print(num_pict)
             else:
+                driver.back()
                 print("no pictures")
+                continue
+            if num_pict <5:
+                driver.back()
                 continue
         except Exception:
             driver.back()
@@ -63,7 +67,12 @@ for letter in range(11, 27):
         
         time.sleep(2)
         #создаём папку с фото актёра
-        os.mkdir(f'.\\dataset\\{gender}\\{act_name}')
+        if os.path.isdir(f'.\\dataset\\{gender}\\{act_name}'):
+            driver.back()
+            driver.back()
+            continue
+        else:
+            os.mkdir(f'.\\dataset\\{gender}\\{act_name}')
 
         #скачиваем фотографии
         classes = driver.find_elements_by_class_name('prev_block_pic')
@@ -86,3 +95,4 @@ for letter in range(11, 27):
         driver.back()
 
 driver.quit()
+ 
