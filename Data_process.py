@@ -35,7 +35,7 @@ for gender in genders:
         if len(images) < 4:
             continue
 
-        #если на фото более двух лиц то не трогаем фото
+        #если на фото более двух лиц или оно чёрно-белое то не трогаем фото
         for image in images:
             path_to_image = path + '\\' + image
             image = Image.open(path_to_image)
