@@ -22,8 +22,9 @@ face_cascade=cv2.CascadeClassifier('.\\haarcascade_frontalface_default.xml')
 genders = os.listdir('dataset')
 
 #пустая таблица для будущих эмбедингов и их классов
-embedings_frame = pd.DataFrame({'Embeding': [],
-                                'Label': []})    
+embedings = np.empty(128)
+label = []  
+
 #загружаем фотографии актёров по одной
 for gender in genders:
     path_to_gender = f'.\\dataset\\{gender}'
@@ -57,42 +58,22 @@ for gender in genders:
             face = face .to(dtype=torch.float64)
             with torch.no_grad():
                 embeding = resnet18(face)
-
-            # для каждого фото получаем эмбединг длиной 128
-            embedings_frame = embedings_frame.append({'Embeding': embeding[0].detach().numpy(),
-                                'Label': name},
-                               ignore_index=True)
+            
+            label.append(name)
+            embedings = np.vstack((embedings, embeding.detach().numpy()))
 
 #отделяем женщин от мужчин
-female_frame = embedings_frame[699:]
-male_frame = embedings_frame[:699]
+female_embed = embedings[699:]
+male_embed = embedings[:699]
+female_lab = label[699:]
+male_lab = label[:699]
 
-#создаём метки формата integer для дальнейшего использования в модели
-lb_make = LabelEncoder()
-names = male_frame.Label.unique()
-label_int = lb_make.fit_transform(names)
-catigories_male = {}
-for i in range(len(label_int)):
-    catigories_male.update({names[i]: label_int[i]})
+np.savetxt('female_embed.txt', female_embed)
+np.savetxt('male_embed.txt', male_embed)
+np.savetxt('female_lab.txt', female_lab, fmt="%s")
+np.savetxt('male_lab.txt', male_lab, fmt="%s")
 
-names = female_frame.Label.unique()
-label_int = lb_make.fit_transform(names)
-catigories_female = {}
-for i in range(len(label_int)):
-    catigories_female.update({names[i]: label_int[i]})
 
-#добавляем колонку label_int с метками integer
-female_label_int = [catigories_female[f'{x}'] for x in female_frame.Label.values]
-female_frame['Label_int'] = female_label_int
 
-male_label_int = [catigories_male[f'{x}'] for x in male_frame.Label.values]
-male_frame['Label_int'] = male_label_int
 
-#перемешиваем строчки
-female_frame = female_frame.sample(frac=1).reset_index(drop=True)
-male_frame = male_frame.sample(frac=1).reset_index(drop=True)
-
-#сохраняем как csv
-female_frame.to_csv('female_frame.csv', index = False, header = True)
-male_frame.to_csv('male_frame.csv', index = False, header = True)
 
