@@ -32,8 +32,8 @@ def predict(image_path, gender = 'man'):
     image = np.array(image)
     face_cascade=cv2.CascadeClassifier('.\\haarcascade_frontalface_default.xml')
     faces = face_cascade.detectMultiScale(image, 1.1, 4)
-    if len(faces) != 1:
-        print('More than 1 face')
+    if len(faces) != 1 or len(image.shape) != 3:
+        print('More than 1 face or blac-white picture')
         return
 
     for (x, y, w, h) in faces:    
@@ -64,6 +64,7 @@ def predict(image_path, gender = 'man'):
         new_pos = new_val.index(y) # value from dictionary
         print("The most similar actor is",new_ke_lis[new_pos])
 
-    
+#проверям на существующей фотографии
+predict('.\\dataset\\women\\АЛЁНА_САВАСТОВА\\2.jpeg', 'woman')  
 
     
