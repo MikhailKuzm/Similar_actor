@@ -32,31 +32,25 @@ for i in range(len(label_int)):
 female_label_int = [catigories_female[f'{x}'] for x in female_lab]
 male_label_int = [catigories_male[f'{x}'] for x in male_lab]
 
-
-#KNN для мужчин
+#KNN модель для мужчин
 X_train, X_test, y_train, y_test  = train_test_split(male_embed, male_label_int, test_size = 0.2, 
                                                      stratify = male_label_int, random_state = 1)
-
 knn_men = KNeighborsClassifier()
 knn_men.fit(X_train, y_train)
-
 model_name = "knn_men.pkl"
 with open(model_name, 'wb') as file:
     pickle.dump(knn_men, file)
 
-
-#KNN для женщин
+#KNN модель для женщин
 X_train, X_test, y_train, y_test  = train_test_split(female_embed, female_label_int, test_size = 0.2, 
                                                      stratify = female_label_int, random_state = 1)
-
 knn_women = KNeighborsClassifier()
 knn_women.fit(X_train, y_train)
-
 model_name = "knn_women.pkl"
 with open(model_name, 'wb') as file:
     pickle.dump(knn_women, file)
 
-
+#сохраняем словари для дальнейшей интерпритации результатов
 with open('catigories_male.pkl', 'wb') as file:
     pickle.dump(catigories_male, file)
 with open('catigories_female.pkl', 'wb') as file:
