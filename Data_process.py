@@ -6,11 +6,11 @@ import cv2
 import torchvision.models as models 
 import torch
 from torch import nn
-from sklearn.preprocessing import LabelEncoder
+
 
 
 #загружаем  веса для нейронной сети resnet 18
-resnet18 = models.resnet18(pretrained=True)
+resnet18 = models.resnet18(pretrained=False)
 resnet18.fc = nn.Linear(512, 128)
 #torch.save(resnet18.state_dict(), 'resnet18_weights.pth')
 resnet18.load_state_dict(torch.load('resnet18_weights.pth'))
@@ -23,7 +23,7 @@ genders = os.listdir('dataset')
 
 #пустая таблица для будущих эмбедингов и их классов
 embedings = np.empty(128)
-label = []  
+label = [] 
 
 #загружаем фотографии актёров по одной
 for gender in genders:
